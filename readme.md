@@ -75,15 +75,14 @@ You can run the builds in a [Docker](https://www.docker.com/) container:
 
 ```
 $ docker-machine create --driver virtualbox cedar
-$ eval "$(docker-machine env ceder)"
-$ make build # It outputs the latest builds to bin/cedar-*
+$ eval "$(docker-machine env cedar)"
+$ make build
 ```
 
 To test the builds:
 
 ```
 $ make shell
-$ cp bin/nginx-$STACK bin/nginx
 $ FORCE=1 bin/start-nginx
 ```
 

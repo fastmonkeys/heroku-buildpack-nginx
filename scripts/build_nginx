@@ -12,10 +12,14 @@
 NGINX_VERSION=${NGINX_VERSION-1.9.5}
 PCRE_VERSION=${PCRE_VERSION-8.37}
 HEADERS_MORE_VERSION=${HEADERS_MORE_VERSION-0.261}
+LUA_NGINX_MODULE_VERSION=${LUA_NGINX_MODULE_VERSION-0.10.4}
+LUAJIT_VERSION=${LUAJIT_VERSION-2.0.4}
 
 nginx_tarball_url=http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz
 pcre_tarball_url=http://iweb.dl.sourceforge.net/project/pcre/pcre/${PCRE_VERSION}/pcre-${PCRE_VERSION}.tar.bz2
 headers_more_nginx_module_url=https://github.com/openresty/headers-more-nginx-module/archive/v${HEADERS_MORE_VERSION}.tar.gz
+lua_nginx_module_tarball_url=https://github.com/openresty/lua-nginx-module/archive/v${LUA_NGINX_MODULE_VERSION}.tar.gz
+luajit_tarball_url=http://luajit.org/download/LuaJIT-${LUAJIT_VERSION}.tar.gz
 
 temp_dir=$(mktemp -d /tmp/nginx.XXXXXXXXXX)
 
@@ -35,13 +39,30 @@ echo "Downloading $pcre_tarball_url"
 echo "Downloading $headers_more_nginx_module_url"
 (cd nginx-${NGINX_VERSION} && curl -L $headers_more_nginx_module_url | tar xvz )
 
+echo "Downloading $luajit_tarball_url"
+curl -L $luajit_tarball_url | tar xvz
+
+echo "Downloading $lua_nginx_module_tarball_url"
+(cd nginx-${NGINX_VERSION} && curl -L $lua_nginx_module_tarball_url | tar xvz )
+
+export LUAJIT_LIB=/tmp/luajit/lib
+export LUAJIT_INC=/tmp/luajit/include/luajit-2.0
+
+(
+	cd LuaJIT-${LUAJIT_VERSION}
+	make
+	make install PREFIX=/tmp/luajit
+)
+
 (
 	cd nginx-${NGINX_VERSION}
 	./configure \
 		--with-pcre=pcre-${PCRE_VERSION} \
 		--prefix=/tmp/nginx \
-		--add-module=/${temp_dir}/nginx-${NGINX_VERSION}/headers-more-nginx-module-${HEADERS_MORE_VERSION}
+		--add-module=${temp_dir}/nginx-${NGINX_VERSION}/headers-more-nginx-module-${HEADERS_MORE_VERSION} \
+		--add-module=${temp_dir}/nginx-${NGINX_VERSION}/lua-nginx-module-${LUA_NGINX_MODULE_VERSION}
 	make install
 )
 
-cp /tmp/nginx/sbin/nginx $1
+cp /tmp/nginx/sbin/nginx $1/bin
+cp /tmp/luajit/lib/libluajit-5.1.* $1/lib
