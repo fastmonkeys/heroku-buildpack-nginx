@@ -64,5 +64,5 @@ export LUAJIT_INC=/tmp/luajit/include/luajit-2.0
 	make install
 )
 
-cp /tmp/nginx/sbin/nginx $1/bin
-cp /tmp/luajit/lib/libluajit-5.1.* $1/lib
+cp /tmp/nginx/sbin/nginx $1/bin/nginx-$STACK
+cp /tmp/luajit/lib/libluajit-5.1.* $1/lib/$STACK
