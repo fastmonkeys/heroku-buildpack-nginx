@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -e
+set -eo pipefail
 
 BUILD_DIR=$1
 PROFILE_PATH="$BUILD_DIR/.profile.d"
