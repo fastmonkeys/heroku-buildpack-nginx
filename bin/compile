@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -e
+set -eo pipefail
 
 BUILD_DIR=$1
 PROFILE_PATH="$BUILD_DIR/.profile.d"
@@ -8,7 +8,7 @@ VENDOR_DIR=vendor/luajit
 
 mkdir -p "$BUILD_DIR/bin/"
 cp "bin/nginx-$STACK" "$BUILD_DIR/bin/nginx"
-nginx_version=$(./bin/nginx -V 2>&1 | head -1 | awk '{ print $NF }')
+nginx_version=$(LD_LIBRARY_PATH=lib/$STACK ./bin/nginx-$STACK -V 2>&1 | head -1 | awk '{ print $NF }')
 echo "-----> nginx-buildpack: Installed ${nginx_version} to app/bin"
 cp bin/start-nginx "$BUILD_DIR/bin/"
 echo '-----> nginx-buildpack: Added start-nginx to app/bin'
