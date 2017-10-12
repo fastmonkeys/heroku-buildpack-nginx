@@ -6,7 +6,7 @@ BUILD_DIR=$1
 PROFILE_PATH="$BUILD_DIR/.profile.d"
 VENDOR_DIR=vendor/luajit
 
-echo "-----> nginx-buildpack DEBUG: `LD_LIBRARY_PATH=lib/$STACK ./bin/nginx-$STACK -v 2>&1`"
+echo "-----> nginx-buildpack DEBUG: `LD_LIBRARY_PATH=lib/$STACK ./bin/nginx-$STACK -V 2>&1`"
 
 mkdir -p "$BUILD_DIR/bin/"
 cp "bin/nginx-$STACK" "$BUILD_DIR/bin/nginx"
