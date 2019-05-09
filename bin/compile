@@ -10,6 +10,8 @@ echo "-----> nginx-buildpack DEBUG: `LD_LIBRARY_PATH=lib/$STACK ./bin/nginx-$STA
 
 mkdir -p "$BUILD_DIR/bin/"
 cp "bin/nginx-$STACK" "$BUILD_DIR/bin/nginx"
+echo "-----> nginx-buildpack DEBUG2: `LD_LIBRARY_PATH=lib/$STACK ./bin/nginx-$STACK -V 2>&1 | head -1`"
+echo "-----> nginx-buildpack DEBUG3: `LD_LIBRARY_PATH=lib/$STACK ./bin/nginx-$STACK -V 2>&1 | head -1 | awk '{ print $NF }'`"
 nginx_version=$(LD_LIBRARY_PATH=lib/$STACK ./bin/nginx-$STACK -V 2>&1 | head -1 | awk '{ print $NF }')
 echo "-----> nginx-buildpack: Installed ${nginx_version} to app/bin"
 cp bin/start-nginx "$BUILD_DIR/bin/"
