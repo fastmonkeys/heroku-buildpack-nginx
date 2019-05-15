@@ -6,13 +6,14 @@ BUILD_DIR=$1
 PROFILE_PATH="$BUILD_DIR/.profile.d"
 VENDOR_DIR=vendor/luajit
 
-echo "-----> nginx-buildpack DEBUG: `LD_LIBRARY_PATH=lib/$STACK ./bin/nginx-$STACK -V 2>&1`"
-
 mkdir -p "$BUILD_DIR/bin/"
 cp "bin/nginx-$STACK" "$BUILD_DIR/bin/nginx"
-echo "-----> nginx-buildpack DEBUG2: `LD_LIBRARY_PATH=lib/$STACK ./bin/nginx-$STACK -V 2>&1 | head -1`"
-echo "-----> nginx-buildpack DEBUG3: `LD_LIBRARY_PATH=lib/$STACK ./bin/nginx-$STACK -V 2>&1 | head -1 | awk '{ print $NF }'`"
-nginx_version=$(LD_LIBRARY_PATH=lib/$STACK ./bin/nginx-$STACK -V 2>&1 | head -1 | awk '{ print $NF }')
+nginx_full=$(LD_LIBRARY_PATH=lib/$STACK ./bin/nginx-$STACK -V 2>&1)
+echo "-----> nginx-buildpack DEBUG1: $nginx_full"
+nginx_first_row=$(echo "$nginx_full" | head -n 1)
+echo "-----> nginx-buildpack DEBUG2: $nginx_first_row"
+nginx_version=$(echo "$nginx_first_row" | awk '{ print $NF }')
+echo "-----> nginx-buildpack DEBUG3: $nginx_version"
 echo "-----> nginx-buildpack: Installed ${nginx_version} to app/bin"
 cp bin/start-nginx "$BUILD_DIR/bin/"
 echo '-----> nginx-buildpack: Added start-nginx to app/bin'
