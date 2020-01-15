@@ -10,8 +10,12 @@ mkdir -p "$BUILD_DIR/bin/"
 cp "bin/nginx-$STACK" "$BUILD_DIR/bin/nginx"
 nginx_full=$(LD_LIBRARY_PATH=lib/$STACK ./bin/nginx-$STACK -V 2>&1)
 echo "-----> nginx-buildpack DEBUG1: $nginx_full"
+# For some unknown reason the following command may randomly fail
+# see incy-app issue #4044 for details
+set +eo pipefail
 nginx_first_row=$(echo "$nginx_full" | head -n 1)
-echo "-----> nginx-buildpack DEBUG2: $nginx_first_row"
+echo "-----> nginx-buildpack DEBUG2(errors ignored): $nginx_first_row"
+set -eo pipefail
 nginx_version=$(echo "$nginx_first_row" | awk '{ print $NF }')
 echo "-----> nginx-buildpack DEBUG3: $nginx_version"
 echo "-----> nginx-buildpack: Installed ${nginx_version} to app/bin"
