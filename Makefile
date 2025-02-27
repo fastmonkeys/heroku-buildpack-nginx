@@ -1,4 +1,9 @@
-build: build-heroku-20 build-heroku-18 build-heroku-16 build-cedar-14
+build: build-heroku-22 build-heroku-20 build-heroku-18 build-heroku-16 build-cedar-14
+
+build-heroku-22:
+	@echo "Building Nginx in docker for heroku-22..."
+	@docker run -v $(shell pwd):/buildpack --rm -it -e "STACK=heroku-22" heroku/heroku:22-build bash -c 'cd /buildpack; scripts/build_nginx /buildpack'
+	@echo ""
 
 build-heroku-20:
 	@echo "Building Nginx in docker for heroku-20..."
@@ -18,6 +23,11 @@ build-heroku-16:
 build-cedar-14:
 	@echo "Building Nginx in docker for cedar-14..."
 	@docker run -v $(shell pwd):/buildpack --rm -it -e "STACK=cedar-14" heroku/cedar:14 bash -c 'cd /buildpack; scripts/build_nginx /buildpack'
+	@echo ""
+
+shell-heroku-22:
+	@echo "Opening heroku-22 shell..."
+	@docker run -v $(shell pwd):/buildpack --rm -it -e "STACK=heroku-22" -e "PORT=5000" heroku/heroku:22-build bash -c 'cd /buildpack; bash'
 	@echo ""
 
 shell-heroku-20:
